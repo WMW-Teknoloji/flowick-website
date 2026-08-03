@@ -9,8 +9,10 @@ const routes: Route[] = [];
 let appContainer: HTMLElement;
 
 export function matchRoute(pattern: string, path: string): Record<string, string> | null {
+  // "/blog/" ile "/blog" aynı sayfadır; sondaki eğik çizgi eşleşmeyi bozmasın.
+  const normalized = path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
   const patternParts = pattern.split('/');
-  const pathParts = path.split('/');
+  const pathParts = normalized.split('/');
 
   if (patternParts.length !== pathParts.length) return null;
 

@@ -5,7 +5,7 @@
  * Çalıştırma: npm run build (esbuild ile paketlenip node ile koşulur)
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 
 import { homeHTML } from '../src/pages/home';
 import { productsHTML } from '../src/pages/products';
@@ -86,11 +86,15 @@ function renderPage(path: string, contentHTML: string): string {
   return page;
 }
 
+// Cloudflare Pages, `foo/index.html`i `/foo/` altında servis edip `/foo`yu oraya
+// 308'le yönlendirir. `foo.html` yazınca `/foo` doğrudan servis edilir — kanonik
+// URL'lerimiz, sitemap ve iç linkler eğik çizgisiz olduğu için bu biçim gerekli.
 for (const route of routes) {
   const html = renderPage(route.path, route.html);
-  const dir = route.path === '/' ? DIST : join(DIST, route.path.slice(1));
-  mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, 'index.html'), html, 'utf-8');
+  const outFile =
+    route.path === '/' ? join(DIST, 'index.html') : join(DIST, `${route.path.slice(1)}.html`);
+  mkdirSync(dirname(outFile), { recursive: true });
+  writeFileSync(outFile, html, 'utf-8');
   console.log(`prerender OK ${route.path}`);
 }
 

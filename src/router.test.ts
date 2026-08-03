@@ -26,4 +26,15 @@ describe('matchRoute', () => {
     const result = matchRoute('/urunler', '/urunler');
     expect(result).toEqual({});
   });
+
+  it('matches path with trailing slash', () => {
+    expect(matchRoute('/urunler', '/urunler/')).toEqual({});
+    expect(matchRoute('/blog/:slug', '/blog/dijital-donusum/')).toEqual({
+      slug: 'dijital-donusum',
+    });
+  });
+
+  it('still matches bare root', () => {
+    expect(matchRoute('/', '/')).toEqual({});
+  });
 });
