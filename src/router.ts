@@ -53,10 +53,11 @@ function dispatch(): void {
       return;
     }
   }
-  navigate('/');
+  // Eşleşme yok: sunucunun verdiği içeriğe (ör. 404.html) dokunma.
 }
 
 function interceptLinks(e: MouseEvent): void {
+  if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return;
   const el = (e.target as Element).closest('[data-link]');
   if (!el) return;
   e.preventDefault();

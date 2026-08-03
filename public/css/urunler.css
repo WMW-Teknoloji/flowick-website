@@ -73,12 +73,6 @@
   display: block;
 }
 
-/* Active Ürünler button */
-.urunler-page .nav-links button.active {
-  background: rgb(9,23,71);
-  color: #fff;
-  border-radius: 6px;
-}
 
 @media (max-width: 1024px) {
   .urunler-grid {
@@ -99,4 +93,26 @@
   .urun-title {
     font-size: 11px;
   }
+}
+
+/* ===== PAGE HEADER (SEO h1) ===== */
+.urunler-header {
+  max-width: 1080px;
+  margin: 0 auto 24px;
+  padding: 0 22px;
+  text-align: center;
+}
+.urunler-header h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #282c3b;
+  margin: 0 0 8px;
+}
+.urunler-header p {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  color: #555;
+  max-width: 640px;
+  margin: 0 auto;
 }

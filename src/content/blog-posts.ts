@@ -21,8 +21,8 @@ export const blogPosts: BlogPost[] = [
     author: 'Soner DURSUN',
     likes: 14,
     views: 23,
-    image: 'https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=768,h=602,f=auto,dpr=2,fit=cover/f1729760404572x883864780729843200/11.png',
-    heroImage: 'https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=1536,h=504,f=auto,dpr=2,fit=cover/f1729760404572x883864780729843200/11.png',
+    image: '/assets/images/blog/dijital-donusum-card.png',
+    heroImage: '/assets/images/blog/dijital-donusum-hero.png',
     searchText: 'Dijital dönüşüm sürecinde dikkat edilmesi gerekenler nelerdir? Dijital dönüşümün şirketin genel iş stratejisiyle uyumlu ve başarılı bir şekilde uygulanması sağlanabilir ve rekabetin çok yoğun yaşandığı pazarınızda ön plana çıkabilirsiniz.',
     htmlBody: `
       <h3>1- Net ve Stratejik Hedefler Belirlemek</h3>
@@ -57,8 +57,8 @@ export const blogPosts: BlogPost[] = [
     author: 'Soner DURSUN',
     likes: 20,
     views: 29,
-    image: 'https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=768,h=602,f=auto,dpr=2,fit=cover/f1729760354395x784114729721329200/4.png',
-    heroImage: 'https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=1536,h=504,f=auto,dpr=2,fit=cover/f1729760354395x784114729721329200/4.png',
+    image: '/assets/images/blog/ik-departmani-card.png',
+    heroImage: '/assets/images/blog/ik-departmani-hero.png',
     searchText: 'Küçük İşletmelerin İnsan Kaynakları Departmanına İhtiyacı Var Mı? İnsan kaynakları İK departmanı genellikle büyük ölçekli şirketlerle ilişkilendirilir. Başlangıç aşamasındaki birçok startup için ise İK departmanı genellikle gereksiz bir lüks olarak değerlendirilebilir.',
     htmlBody: `
       <p>İnsan kaynakları (İK) departmanı genellikle büyük ölçekli şirketlerle ilişkilendirilir. Başlangıç aşamasındaki birçok startup için ise İK departmanı genellikle gereksiz bir lüks olarak değerlendirilebilir. Gerçekten de, startupların %35'i İK departmanını tamamen göz ardı etmekte ve bu süreçleri ya mevcut çalışanlara ya da dış kaynaklara devretmektedir.</p>
@@ -83,8 +83,8 @@ export const blogPosts: BlogPost[] = [
     author: 'Soner DURSUN',
     likes: 0,
     views: 0,
-    image: 'https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=768,h=602,f=auto,dpr=2,fit=cover/f1730444440215x370076720890034900/7.png',
-    heroImage: 'https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=1536,h=504,f=auto,dpr=2,fit=cover/f1730444440215x370076720890034900/7.png',
+    image: '/assets/images/blog/dijitallesme-yonetim-card.png',
+    heroImage: '/assets/images/blog/dijitallesme-yonetim-hero.png',
     searchText: 'İşinizi Teknolojiyle Hızlandırın Dijitalleşmenin Yönetimdeki Kullanımları Nelerdir? Bir zamanlar ofiste dosyalar taşınırken şimdi bulutta veriler uçuşuyor. Teknoloji hızla gelişirken iş dünyası da bu hıza ayak uydurmakta.',
     htmlBody: `
       <h3>Yönetim Yazılımları ile Dijitalleşmenin Temeli</h3>

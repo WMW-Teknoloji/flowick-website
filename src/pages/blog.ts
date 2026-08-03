@@ -1,18 +1,18 @@
 import { blogPosts } from '../content/blog-posts';
-import { navigate, getContainer } from '../router';
+import { getContainer } from '../router';
+import { escapeAttr } from '../shared/escape';
 
 export function renderBlog(_params: Record<string, string>): void {
   const container = getContainer();
   container.innerHTML = blogHTML();
   initBlogSearch();
-  initBlogCardClicks();
 }
 
-function blogHTML(): string {
+export function blogHTML(): string {
   const cards = blogPosts
     .map(
       (post) => `
-    <div class="blog-card" data-slug="${post.slug}" data-search="${post.searchText}" style="background-image:url('${post.image}')">
+    <a class="blog-card" href="/blog/${post.slug}" data-link="/blog/${post.slug}" data-search="${escapeAttr(post.searchText)}" style="background-image:url('${post.image}')">
       <div class="blog-card-overlay"></div>
       <div class="blog-card-body">
         <h2 class="blog-card-title">${post.title}</h2>
@@ -22,7 +22,7 @@ function blogHTML(): string {
         <div class="blog-stat"><i class="fa fa-heart-o"></i><span>${post.likes}</span></div>
         <div class="blog-stat"><i class="fa fa-eye"></i><span>${post.views}</span></div>
       </div>
-    </div>
+    </a>
   `
     )
     .join('');
@@ -62,15 +62,5 @@ function initBlogSearch(): void {
     });
 
     if (noResults) noResults.style.display = visible === 0 ? 'block' : 'none';
-  });
-}
-
-function initBlogCardClicks(): void {
-  document.querySelectorAll<HTMLElement>('.blog-card[data-slug]').forEach((card) => {
-    card.style.cursor = 'pointer';
-    card.addEventListener('click', () => {
-      const slug = card.dataset.slug;
-      if (slug) navigate(`/blog/${slug}`);
-    });
   });
 }

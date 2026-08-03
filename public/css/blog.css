@@ -247,12 +247,6 @@
   grid-column: 1 / -1;
 }
 
-/* Blog button active */
-.blog-page .nav-links button.active {
-  background: rgb(9,23,71);
-  color: #fff;
-  border-radius: 6px;
-}
 
 @media (max-width: 768px) {
   .blog-grid {
@@ -276,3 +270,6 @@
     padding: 104px 10px 60px;
   }
 }
+
+/* blog-card artık <a> — link resetleri */
+a.blog-card { text-decoration: none; color: inherit; }

@@ -11,7 +11,32 @@ export function renderHome(_params: Record<string, string>): void {
   initContactForm();
 }
 
-function homeHTML(): string {
+const referenceLogos: Array<{ src: string; alt: string }> = [
+  { src: '/assets/images/refs/ateco.png', alt: 'Ateco Industries' },
+  { src: '/assets/images/refs/bubble.png', alt: 'Bubble' },
+  { src: '/assets/images/refs/kentmeydani.png', alt: 'Kent Meydanı' },
+  { src: '/assets/images/refs/evona.png', alt: 'Evona' },
+  { src: '/assets/images/refs/zapier.png', alt: 'Zapier' },
+  { src: '/assets/images/refs/metropol.png', alt: 'Metropol Shipping' },
+  { src: '/assets/images/refs/yavrupatiler.png', alt: 'Yavru Patiler' },
+  { src: '/assets/images/refs/akerosgb.png', alt: 'Aker OSGB' },
+  { src: '/assets/images/refs/paytr.png', alt: 'PayTR' },
+  { src: '/assets/images/refs/paratika.png', alt: 'Paratika' },
+  { src: '/assets/images/refs/arena.png', alt: 'Arena Bilgisayar A.Ş.' },
+];
+
+function logoCards(): string {
+  const cards = referenceLogos
+    .map(
+      (logo) =>
+        `<div class="logo-card"><img src="${logo.src}" alt="${logo.alt}" loading="lazy"></div>`
+    )
+    .join('\n      ');
+  // sonsuz kayan şerit için ikinci kopya
+  return `${cards}\n      ${cards}`;
+}
+
+export function homeHTML(): string {
   return `
     <section class="hero" id="anasayfa">
   <div class="hero-inner">
@@ -24,35 +49,13 @@ function homeHTML(): string {
         <span class="label">Bize Ulaşın</span>
       </div>
     </div>
-    <img class="hero-image" src="/assets/images/hero.png" alt="">
+    <img class="hero-image" src="/assets/images/hero.png" alt="Flowick BPM iş süreçleri yönetim ekranı" fetchpriority="high">
   </div>
 
   <!-- LOGOS CAROUSEL -->
   <div class="logos-section" id="referanslar">
     <div class="logos-track">
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438456469x381837753681226300/ateco-industries-logo.png" alt="Ateco Industries"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/f1725438466147x408420037730634000/Bubble_Logo_no_code.svg.png" alt="Bubble"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438473778x496879454284380600/kentmeydani-logo.png" alt="Kent Meydanı"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438483672x707866493375712800/logo.png" alt="Evona"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438493849x446773333381409900/logo_black%402x.png" alt="Zapier"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438504853x255537479629709400/METROPOL%20SHIPPING%20LOGO-1.png" alt="Metropol Shipping"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438513553x111451249811334020/yavrupatilerlogo-1.png" alt="Yavru Patiler"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438551899x918359054952491600/https___e0c771e7ae3bd68159a239fb345fe0e3.cdn.bubble.io_f1722426808612x933120373654326300_akerosgb-logo-kopya.png" alt="Aker OSGB"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1727102337473x813747243679567600/paytr-removebg-preview.png" alt="PayTR"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1727102351558x757180717231174000/paratika-removebg.png" alt="Paratika"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1734046302263x402341241169523760/ARENA-BILGISAYAR-A.S.png" alt="Arena Bilgisayar A.Ş."></div>
-      <!-- duplicate set for seamless loop -->
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438456469x381837753681226300/ateco-industries-logo.png" alt="Ateco Industries"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/f1725438466147x408420037730634000/Bubble_Logo_no_code.svg.png" alt="Bubble"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438473778x496879454284380600/kentmeydani-logo.png" alt="Kent Meydanı"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438483672x707866493375712800/logo.png" alt="Evona"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438493849x446773333381409900/logo_black%402x.png" alt="Zapier"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438504853x255537479629709400/METROPOL%20SHIPPING%20LOGO-1.png" alt="Metropol Shipping"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438513553x111451249811334020/yavrupatilerlogo-1.png" alt="Yavru Patiler"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1725438551899x918359054952491600/https___e0c771e7ae3bd68159a239fb345fe0e3.cdn.bubble.io_f1722426808612x933120373654326300_akerosgb-logo-kopya.png" alt="Aker OSGB"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1727102337473x813747243679567600/paytr-removebg-preview.png" alt="PayTR"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1727102351558x757180717231174000/paratika-removebg.png" alt="Paratika"></div>
-      <div class="logo-card"><img src="https://26727d055105d42392958b58441c0398.cdn.bubble.io/cdn-cgi/image/w=256,h=179,f=auto,dpr=2,fit=contain/f1734046302263x402341241169523760/ARENA-BILGISAYAR-A.S.png" alt="Arena Bilgisayar A.Ş."></div>
+      ${logoCards()}
     </div>
   </div>
 
@@ -76,7 +79,7 @@ function homeHTML(): string {
         </a>
       </div>
     </div>
-    <img class="app-promo-image" src="/assets/images/app-promo.png" alt="">
+    <img class="app-promo-image" src="/assets/images/app-promo.png" alt="Flowick BPM mobil uygulama ekranı" loading="lazy">
   </div>
 
   <!-- ABOUT -->
@@ -98,7 +101,7 @@ function homeHTML(): string {
 
   <!-- WHY TECH -->
   <div class="why-tech">
-    <img class="why-tech-bg" src="/assets/images/why-tech-bg.png" alt="">
+    <img class="why-tech-bg" src="/assets/images/why-tech-bg.png" alt="" loading="lazy">
     <div class="why-tech-inner">
       <div class="why-tech-heading">
         <h2>Daha Çok Teknoloji İçin Sıra Sizde !</h2>
@@ -128,7 +131,7 @@ function homeHTML(): string {
   <!-- TRACK SECTION -->
   <div class="track-section" id="hizmetlerimiz">
     <div class="track-inner">
-      <img class="track-image" src="/assets/images/track.svg" alt="">
+      <img class="track-image" src="/assets/images/track.svg" alt="" loading="lazy">
       <div class="track-text">
         <h2>İşlerinizi, Flowick BPM ile Tek Ekrandan Takip Edin!</h2>
         <p>Yenilikçi yazılım ürünümüz, iş süreçlerinizi maksimum verimlilikle yönetmenizi sağlayan kapsamlı bir çözüm sunuyor. Tüm görevleri ve süreçleri tek bir kullanıcı dostu ekran üzerinden takip edebilme özelliği, iş akışlarınızı kolaylıkla yönetmenize olanak tanır. Hem mobil hem web platformları üzerinden erişilebilir olması, ekiplerinizin her an her yerden etkileşimde bulunmasını sağlar.. Bu yenilikçi çözüm, iş akışlarınızı yönetirken zamandan ve kaynaklardan tasarruf etmenize yardımcı olacak, iş süreçlerinizi daha etkili ve yönetilebilir hale getirecek bir araçtır.</p>
@@ -225,7 +228,7 @@ function homeHTML(): string {
       <path d="M766.1,28.9c-200-57.5-266,65.5-395.1,19.5C242,1.8,242,5.4,184.8,20.6C128,35.8,132.3,44.9,89.9,52.5C28.6,63.7,0,0,0,0 h1000c0,0-9.9,40.9-83.6,48.1S829.6,47,766.1,28.9z"></path>
     </svg>
     <div class="contact-inner">
-      <img class="contact-image" src="/assets/images/contact.png" alt="">
+      <img class="contact-image" src="/assets/images/contact.png" alt="" loading="lazy">
       <form class="contact-form-wrap contact-form">
         <h2>İletişim</h2>
         <div class="contact-row">

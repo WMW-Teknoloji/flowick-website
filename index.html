@@ -6,15 +6,18 @@
   <title>Flowick — İş Süreçleri Yönetim Yazılımı</title>
   <meta name="description" content="Flowick BPM ile iş süreçlerinizi tek ekrandan yönetin, verimliliğinizi artırın.">
   <link rel="icon" type="image/svg+xml" href="/assets/logos/flowick-logo-nav.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,500,600,700|Poppins:400,500,600,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,500,600,700|Poppins:400,500,600,700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="navbar-inner">
-    <img src="/assets/logos/flowick-logo-nav.svg" alt="Flowick Logo" data-link="/" style="cursor:pointer;">
+    <a href="/" data-link="/" aria-label="Flowick ana sayfa"><img src="/assets/logos/flowick-logo-nav.svg" alt="Flowick Logo"></a>
     <button class="nav-toggle" aria-label="Menü"><i class="fa fa-bars"></i></button>
     <div class="nav-links">
       <button data-scroll="anasayfa">Ana Sayfa</button>
@@ -22,8 +25,8 @@
       <button data-scroll="hakkimizda">Hakkımızda</button>
       <button data-scroll="hizmetlerimiz">Hizmetlerimiz</button>
       <button data-scroll="sss">S.S.S</button>
-      <button data-link="/urunler">Ürünler</button>
-      <button data-link="/blog">Blog</button>
+      <a href="/urunler" data-link="/urunler">Ürünler</a>
+      <a href="/blog" data-link="/blog">Blog</a>
       <div class="phone-icon" data-scroll="iletisim"><i class="fa fa-phone"></i></div>
     </div>
   </div>
@@ -105,9 +108,9 @@
     <div class="footer-col footer-col-center">
       <h4>Belgelerimiz</h4>
       <div class="cert-row">
-        <img class="cert-img" src="https://8e8013394bea5bdce6507927f51d87d8.cdn.bubble.io/cdn-cgi/image/w=64,h=64,f=auto,dpr=1.5,fit=contain/f1725387623375x927219198404506400/pngwing.com.png" alt="Sertifika" data-full="https://8e8013394bea5bdce6507927f51d87d8.cdn.bubble.io/f1725387623375x927219198404506400/pngwing.com.png">
-        <img class="cert-img" src="https://8e8013394bea5bdce6507927f51d87d8.cdn.bubble.io/cdn-cgi/image/w=64,h=64,f=auto,dpr=1.5,fit=contain/f1725387493547x662256367993890200/27701.png" alt="ISO 27701" data-full="https://8e8013394bea5bdce6507927f51d87d8.cdn.bubble.io/f1725387493547x662256367993890200/27701.png">
-        <img class="cert-img" src="https://8e8013394bea5bdce6507927f51d87d8.cdn.bubble.io/cdn-cgi/image/w=64,h=64,f=auto,dpr=1.5,fit=contain/f1725387461012x973826346546947800/iso-9001-certified-logo-AC594FAD01-seeklogo.com.png" alt="ISO 9001" data-full="https://8e8013394bea5bdce6507927f51d87d8.cdn.bubble.io/f1725387461012x973826346546947800/iso-9001-certified-logo-AC594FAD01-seeklogo.com.png">
+        <img class="cert-img" src="/assets/certificates/pngwing.png" alt="Sertifika" data-full="/assets/certificates/pngwing.png" loading="lazy">
+        <img class="cert-img" src="/assets/certificates/iso27701.png" alt="ISO 27701 Sertifikası" data-full="/assets/certificates/iso27701.png" loading="lazy">
+        <img class="cert-img" src="/assets/certificates/iso9001.png" alt="ISO 9001 Sertifikası" data-full="/assets/certificates/iso9001.png" loading="lazy">
       </div>
     </div>
 

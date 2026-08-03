@@ -1,6 +1,7 @@
 import './styles.css';
 import { initRouter, addRoute } from './router';
 import { initHeader, updateActiveNav } from './header';
+import { applyMeta, metaForPath } from './seo';
 import { initPolicyModals } from './shared/modals';
 import { renderHome } from './pages/home';
 import { renderBlog } from './pages/blog';
@@ -11,6 +12,7 @@ function wrapWithNav(renderer: (params: Record<string, string>) => void, path: s
   return (params: Record<string, string>) => {
     renderer(params);
     updateActiveNav(path);
+    applyMeta(metaForPath(window.location.pathname));
   };
 }
 

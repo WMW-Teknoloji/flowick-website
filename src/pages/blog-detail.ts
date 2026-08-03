@@ -1,5 +1,6 @@
-import { findPostBySlug } from '../content/blog-posts';
+import { findPostBySlug, type BlogPost } from '../content/blog-posts';
 import { navigate, getContainer } from '../router';
+import { escapeAttr } from '../shared/escape';
 
 export function renderBlogDetail(params: Record<string, string>): void {
   const container = getContainer();
@@ -11,10 +12,14 @@ export function renderBlogDetail(params: Record<string, string>): void {
     return;
   }
 
-  container.innerHTML = `
+  container.innerHTML = blogDetailHTML(post);
+}
+
+export function blogDetailHTML(post: BlogPost): string {
+  return `
     <div class="blog-detail-page">
       <div class="blog-detail-hero">
-        <img src="${post.heroImage}" alt="${post.title}">
+        <img src="${post.heroImage}" alt="${escapeAttr(post.title)}" fetchpriority="high">
       </div>
 
       <div class="blog-detail-meta-bar">
@@ -29,11 +34,11 @@ export function renderBlogDetail(params: Record<string, string>): void {
       </div>
 
       <div class="blog-detail-wrap">
-        <a class="blog-detail-back" data-link="/blog" style="cursor:pointer;">
+        <a class="blog-detail-back" href="/blog" data-link="/blog">
           <i class="fa fa-chevron-left"></i> Blog'a Dön
         </a>
         <h1 class="blog-detail-title">${post.title}</h1>
-        <h2 class="blog-detail-subtitle">${post.subtitle}</h2>
+        <p class="blog-detail-subtitle">${post.subtitle}</p>
         <div class="blog-detail-body">${post.htmlBody}</div>
       </div>
     </div>
