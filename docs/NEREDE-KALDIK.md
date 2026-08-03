@@ -4,7 +4,9 @@ Güncelleme: 2026-08-03
 
 ## Durum
 
-SEO çalışması (ilk büyük tur) TAMAM, commit bekliyor / yeni commit'lendi.
+SEO çalışması (ilk büyük tur) TAMAM ve **CANLIDA**. Canlıda doğrulandı:
+6 route'un hepsi 200 + özgün title, bilinmeyen URL 404 veriyor, `robots.txt` temiz
+servis ediliyor (Cloudflare "Managed robots.txt" kapatıldı), `sitemap.xml` erişilebilir.
 
 ## Bu turda yapılanlar (SEO)
 
@@ -36,13 +38,12 @@ SEO çalışması (ilk büyük tur) TAMAM, commit bekliyor / yeni commit'lendi.
 
 ## Açık işler / dış girdi bekleyenler
 
-- **Cloudflare dashboard: "Block AI bots" KAPATILACAK** (kullanıcı onayladı, kendisi yapacak).
-  Şu an GPTBot/ClaudeBot/CCBot vb. engelli + robots.txt'ye CF managed content signals ekleniyor.
-  Kapatılınca bizim `public/robots.txt` temiz servis edilir.
+- **Cloudflare "Managed robots.txt" KAPATILDI** — `public/robots.txt` artık temiz servis ediliyor.
+  Kalan kontrol: AI Crawl Control → Security sekmesinde bot bloklama kuralı var mı?
+  robots.txt rica, oradaki kural fiilî engeldir.
 - **Görev Yönetimi ürün ikonu**: Bubble CDN 403 veriyor (canlıda da kırıktı). Kart şimdilik
   görselsiz; yeni ikon bulununca `products.ts` içine eklenecek.
-- **Deploy**: repo CF Pages'e git-bağlıysa push yeter; değilse `npm run deploy`
-  (wrangler pages deploy dist).
+- **Deploy**: push'ta otomatik (CF Pages git bağlı, master'dan deploy ediyor — doğrulandı).
 - **GA4/GTM yok** — çerez politikası GA'dan bahsediyor ama ölçüm scripti yok. Measurement ID gerekli.
 - **OG görseli**: şimdilik hero.png; 1200x630 özel OG görseli üretilebilir.
 - **Search Console**: sitemap.xml gönderilecek (Google hesabı gerekli).
@@ -50,7 +51,7 @@ SEO çalışması (ilk büyük tur) TAMAM, commit bekliyor / yeni commit'lendi.
 
 ## Sıradaki adaylar (öncelik sırasıyla)
 
-1. Deploy + Search Console kaydı + sitemap gönderimi
+1. Search Console kaydı + sitemap gönderimi (Google hesabı gerekli)
 2. GA4 kurulumu (dönüşüm: form gönderimi, telefon tıklaması, store linkleri)
 3. Blog içerik takvimi (BPM/süreç yönetimi anahtar kelimeleri; mevcut 3 yazı iyi bir çekirdek)
 4. Özel OG görselleri + ürün kartlarına gerçek ekran görüntüleri
@@ -63,3 +64,6 @@ SEO çalışması (ilk büyük tur) TAMAM, commit bekliyor / yeni commit'lendi.
   `<meta name="description" ...>` yapısı değişirse `scripts/prerender.ts` regex'leri güncellenmeli
   (bulamazsa hata fırlatır, sessiz geçmez).
 - Kaynak dosyalar UTF-8; PowerShell'de `Get-Content` mojibake gösterir, aldırma.
+- Prerender çıktısı **`foo.html`** biçiminde yazılır, `foo/index.html` DEĞİL. Cloudflare Pages
+  ikincisini `/foo/` altında servis edip `/foo`yu 308'ler; kanonik URL'lerimiz eğik çizgisiz
+  olduğu için bu yönlendirme zinciri istenmiyor.
