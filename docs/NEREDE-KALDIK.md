@@ -38,9 +38,12 @@ servis ediliyor (Cloudflare "Managed robots.txt" kapatıldı), `sitemap.xml` eri
 
 ## Açık işler / dış girdi bekleyenler
 
-- **Cloudflare "Managed robots.txt" KAPATILDI** — `public/robots.txt` artık temiz servis ediliyor.
-  Kalan kontrol: AI Crawl Control → Security sekmesinde bot bloklama kuralı var mı?
-  robots.txt rica, oradaki kural fiilî engeldir.
+- **Cloudflare bot ayarları TAMAM** (2026-08-03): "Managed robots.txt" kapatıldı,
+  "Block AI bots Scope" → *Do not block* yapıldı, ardından AI Crawl Control → Security'de
+  12 kazıyıcı tek tek engellendi (Bytespider, CCBot, Amazonbot, Anchor Browser, FacebookBot,
+  Meta-ExternalAgent, PetalBot, TikTok Spider, Novellum, Timpibot, ProRataInc, Arquivo).
+  Gerçek user-agent'larla doğrulandı: ClaudeBot/GPTBot/PerplexityBot → 200,
+  CCBot/Bytespider → 403.
 - **Görev Yönetimi ürün ikonu**: Bubble CDN 403 veriyor (canlıda da kırıktı). Kart şimdilik
   görselsiz; yeni ikon bulununca `products.ts` içine eklenecek.
 - **Deploy**: push'ta otomatik (CF Pages git bağlı, master'dan deploy ediyor — doğrulandı).
