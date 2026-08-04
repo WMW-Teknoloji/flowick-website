@@ -2,7 +2,33 @@
 
 Güncelleme: 2026-08-04
 
-## Son tur (2026-08-04, üçüncü iş) — İLETİŞİM FORMU ARAYÜZ CİLASI
+## Son tur (2026-08-04, dördüncü iş) — FORM ALANLARI VE ÖZEL AÇILIR LİSTE
+
+1. **Ad/Soyad dardı.** Beş alan eşit pay alıyordu (`flex:1`). Artık içerik
+   uzunluğuna göre pay: ad/soyad `1.3`, e-posta `1.4`, telefon `1.05`, ürün `1.15`.
+2. **Telefon her şeyi kabul ediyordu.** Yazarken rakam dışı karakterler ayıklanıyor
+   ve 11 haneye kırpılıyor; gönderimde **10 veya 11 hane** şartı **hem tarayıcıda
+   hem Pages Function'ında** doğrulanıyor (istemci denetimi tek başına güvenlik değil).
+   Alan isteğe bağlı — boş bırakılabilir.
+3. **Ürün listesi ekranın dibine uzuyordu.** Sebep: yerel `<select>`'in açılan
+   listesini tarayıcı/işletim sistemi çiziyor, **yüksekliği CSS ile sınırlanamıyor**.
+   21 seçenekle liste viewport'un dibine iniyordu. Çözüm: `src/select.ts` —
+   erişilebilir özel açılır liste. `role="listbox"`, ok tuşları, Home/End, Enter,
+   Escape (odak düğmeye döner), dışarı tıklama, `aria-activedescendant`,
+   `aria-selected`. Liste `max-height:260px` + kaydırma; panel gerekirse alandan
+   geniş açılır (sağa yaslı, taşmaz). **Değer gizli girdide durur, alan adı `urun`
+   değişmedi** — sunucu tarafı ve mail gövdesi aynı kaldı.
+
+Ayrıca tüm alanlara `aria-label` + `autocomplete` eklendi; alanlar yalnızca
+yer tutucuyla etiketliydi (ekran okuyucuda alan adı yoktu).
+
+Testler: `src/select.test.ts` (13) + telefon için 5 istemci / 5 sunucu = **85 yeşil**.
+
+**Tuzak:** özel açılır liste JS gerektirir. JS kapalıysa ürün seçilemez (alan
+isteğe bağlı olduğu için form yine gönderilir). Yerel select'e geri dönmek
+sorunu geri getirir — liste yüksekliği CSS'ten kontrol edilemez.
+
+## Önceki tur (2026-08-04, üçüncü iş) — İLETİŞİM FORMU ARAYÜZ CİLASI
 
 Sahibinin bildirdiği üç şikâyet:
 
