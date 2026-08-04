@@ -308,7 +308,8 @@ img{max-width:100%;display:block;}
 .contact-row input, .contact-row select{padding:0 10px; height:46px; flex:1; min-width:70px;}
 /* Ad ve Soyad eşit paydan dar kalıyordu; alanlar içeriklerinin uzunluğuna göre pay alır. */
 .contact-row input[name="ad"], .contact-row input[name="soyad"]{flex:1.7; min-width:120px;}
-.contact-row input[name="telefon"]{flex:1.15;}
+/* Yer tutucu "(5XX) XXX XX XX" kesiliyordu; alan büyütüldü. */
+.contact-row input[name="telefon"]{flex:1.6; min-width:170px;}
 .contact-row input[name="eposta"]{flex:1.4;}
 .contact-konu{display:block; width:100%; height:46px; margin-bottom:8px; padding:0 15px;}
 .contact-form-wrap textarea{width:100%; height:100px; margin-bottom:8px; padding:12px 15px; resize:none;}
