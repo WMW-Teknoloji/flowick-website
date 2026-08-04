@@ -285,9 +285,8 @@ export function homeHTML(): string {
         <div class="contact-row">
           <input type="text" name="ad" placeholder="Ad" aria-label="Ad" autocomplete="given-name" required>
           <input type="text" name="soyad" placeholder="Soyad" aria-label="Soyad" autocomplete="family-name" required>
-          <input type="tel" name="telefon" placeholder="Telefon" aria-label="Telefon"
-                 autocomplete="tel" inputmode="numeric" maxlength="11" pattern="[0-9]{10,11}"
-                 title="10 veya 11 haneli telefon numarası">
+          <input type="tel" name="telefon" placeholder="(5XX) XXX XX XX" aria-label="Telefon numarası"
+                 autocomplete="tel" inputmode="numeric">
           <input type="email" name="eposta" placeholder="E-Posta" aria-label="E-posta" autocomplete="email" required>
           ${urunSecimiHTML()}
         </div>

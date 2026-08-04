@@ -5,7 +5,7 @@ const FORM_HTML = `
   <form class="contact-form">
     <input type="text" name="ad" value="Berke">
     <input type="email" name="eposta" value="berke@example.com">
-    <input type="tel" name="telefon" maxlength="11">
+    <input type="tel" name="telefon">
     <div class="cf-turnstile" data-sitekey="${'0x4AAAAAAEGHIvMD2W44X0ZR'}" data-action="turnstile-spin-v1"></div>
     <button type="submit" class="contact-submit">Gönder</button>
     <div class="form-status"></div>
@@ -130,18 +130,39 @@ describe('initContactForm — telefon alanı', () => {
     telefon().dispatchEvent(new Event('input', { bubbles: true }));
   }
 
-  it('rakam dışındaki karakterleri atar', () => {
+  it('yazarken (5XX) XXX XX XX biçiminde gruplanır', () => {
+    initContactForm();
+    telefonYaz('5551112233');
+
+    expect(telefon().value).toBe('(555) 111 22 33');
+  });
+
+  it('baştaki 0 grup dışında ayrı tutulur', () => {
+    initContactForm();
+    telefonYaz('05551112233');
+
+    expect(telefon().value).toBe('0 (555) 111 22 33');
+  });
+
+  it('rakam dışındaki karakterler biçimlemeden önce ayıklanır', () => {
     initContactForm();
     telefonYaz('0(555) 111-22 33abc');
 
-    expect(telefon().value).toBe('05551112233');
+    expect(telefon().value).toBe('0 (555) 111 22 33');
   });
 
-  it('11 haneden fazlasını kabul etmez', () => {
+  it('11 haneden fazla rakam kabul edilmez', () => {
     initContactForm();
     telefonYaz('055511122334455');
 
-    expect(telefon().value).toBe('05551112233');
+    expect(telefon().value).toBe('0 (555) 111 22 33');
+  });
+
+  it('yazım sürerken parantez erken kapanmaz', () => {
+    initContactForm();
+    telefonYaz('55');
+
+    expect(telefon().value).toBe('(55');
   });
 
   it('eksik haneli numarayla gönderim yapılmaz', async () => {
@@ -166,7 +187,7 @@ describe('initContactForm — telefon alanı', () => {
     expect(fetchSahte).toHaveBeenCalledTimes(1);
   });
 
-  it('10 haneli numara kabul edilir', async () => {
+  it('10 haneli numara biçimlenmiş hâliyle gönderilir', async () => {
     (window as unknown as Record<string, unknown>).turnstile = sahteTurnstile();
 
     initContactForm();
@@ -175,7 +196,7 @@ describe('initContactForm — telefon alanı', () => {
     await vi.waitFor(() => expect(fetchSahte).toHaveBeenCalled());
 
     const gonderilen = JSON.parse((fetchSahte.mock.calls[0] as [string, RequestInit])[1].body as string);
-    expect(gonderilen.telefon).toBe('5551112233');
+    expect(gonderilen.telefon).toBe('(555) 111 22 33');
   });
 });
 

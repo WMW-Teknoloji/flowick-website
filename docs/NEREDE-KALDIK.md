@@ -2,7 +2,34 @@
 
 Güncelleme: 2026-08-04
 
-## Son tur (2026-08-04, dördüncü iş) — FORM ALANLARI VE ÖZEL AÇILIR LİSTE
+## Son tur (2026-08-04, beşinci iş) — TELEFON MASKESİ + AD/SOYAD GENİŞLİĞİ
+
+Sahibi ad/soyad'ın hâlâ dar olduğunu ve telefonun görsel bir kalıp göstermesini istedi.
+
+**Telefon maskesi:** yazarken `(5XX) XXX XX XX` biçiminde gruplanıyor.
+Baştaki `0` (trunk kodu) varsa gruplardan ayrı tutulur: `0 (555) 111 22 33`.
+`telefonBicimlendir()` (`src/forms.ts`) — basit maske, her tuşta değeri baştan
+kurar, imleç sona gider (kasıtlı basitlik; imleç korumalı maskeleme bu iş için
+aşırı mühendislik olurdu). Yer tutucu `(5XX) XXX XX XX`.
+
+**Kritik ayrıntı:** alanın gövdesindeki değer artık biçimlendirilmiş string
+(`(555) 111 22 33`), rakam dizisi değil. Bu yüzden:
+- Native `pattern="[0-9]{10,11}"` ve `maxlength="11"` **kaldırıldı** — kalsaydı
+  biçimlenmiş değer deseni tutturamaz, tarayıcı `submit` olayını hiç ateşlemez,
+  JS hiç çalışmazdı (native constraint validation `submit`'ten önce çalışır).
+- Frontend gönderim denetimi artık `telefon.length` değil,
+  `telefon.replace(/\D/g,'').length` (rakam sayısı) kontrol ediyor — backend
+  zaten aynı mantığı kullanıyordu, değişmedi.
+- Mail gövdesine biçimlenmiş hâliyle gidiyor (`(555) 111 22 33`) — okunurluk
+  için bilerek, backend zaten `.replace(/\D/g,'')` ile rakam dışını görmezden
+  geliyordu.
+
+**Ad/Soyad genişliği:** `flex:1.3` → `flex:1.7` + `min-width:120px`.
+
+Testler: forms.test.ts telefon bloğu maske davranışına göre yeniden yazıldı,
+**88 test yeşil** (backend değişmedi, 35 aynı kaldı).
+
+## Önceki tur (2026-08-04, dördüncü iş) — FORM ALANLARI VE ÖZEL AÇILIR LİSTE
 
 1. **Ad/Soyad dardı.** Beş alan eşit pay alıyordu (`flex:1`). Artık içerik
    uzunluğuna göre pay: ad/soyad `1.3`, e-posta `1.4`, telefon `1.05`, ürün `1.15`.

@@ -70,13 +70,41 @@ function turnstileKur(form: HTMLFormElement): void {
 const TELEFON_EN_AZ_HANE = 10;
 const TELEFON_EN_COK_HANE = 11;
 
+/**
+ * Rakamları (5XX) XXX XX XX kalıbına diziyor. Baştaki 0 (trunk kodu) varsa
+ * grupların dışında ayrı tutulur — hem 10 hem 11 haneli girişi kapsar.
+ * Basit maske: her tuş vuruşunda değeri baştan yeniden kurar, imleç sona gider.
+ */
+function telefonBicimlendir(rakamlar: string): string {
+  let onEk = '';
+  let kalan = rakamlar;
+  if (kalan.startsWith('0')) {
+    onEk = '0 ';
+    kalan = kalan.slice(1);
+  }
+
+  const gruplar: string[] = [];
+  if (kalan.length > 0) gruplar.push(kalan.slice(0, 3));
+  if (kalan.length > 3) gruplar.push(kalan.slice(3, 6));
+  if (kalan.length > 6) gruplar.push(kalan.slice(6, 8));
+  if (kalan.length > 8) gruplar.push(kalan.slice(8, 10));
+
+  if (gruplar.length === 0) return onEk.trim();
+
+  let sonuc = `(${gruplar[0]}${kalan.length >= 3 ? ')' : ''}`;
+  for (let i = 1; i < gruplar.length; i += 1) sonuc += ` ${gruplar[i]}`;
+
+  return onEk + sonuc;
+}
+
 function telefonAlaniniKur(form: HTMLFormElement): void {
   const alan = form.querySelector<HTMLInputElement>('input[name="telefon"]');
   if (!alan) return;
 
   alan.addEventListener('input', () => {
     const rakamlar = alan.value.replace(/\D/g, '').slice(0, TELEFON_EN_COK_HANE);
-    if (alan.value !== rakamlar) alan.value = rakamlar;
+    const bicimli = telefonBicimlendir(rakamlar);
+    if (alan.value !== bicimli) alan.value = bicimli;
   });
 }
 
@@ -103,7 +131,8 @@ export function initContactForm(): void {
     const jeton = data['cf-turnstile-response'];
 
     const telefon = typeof data.telefon === 'string' ? data.telefon : '';
-    if (telefon !== '' && (telefon.length < TELEFON_EN_AZ_HANE || telefon.length > TELEFON_EN_COK_HANE)) {
+    const telefonHaneSayisi = telefon.replace(/\D/g, '').length;
+    if (telefon !== '' && (telefonHaneSayisi < TELEFON_EN_AZ_HANE || telefonHaneSayisi > TELEFON_EN_COK_HANE)) {
       durumYaz(status, 'Telefon numarası 10 veya 11 haneli olmalı.', true);
       return;
     }
