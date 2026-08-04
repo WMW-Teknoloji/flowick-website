@@ -282,14 +282,14 @@ export function homeHTML(): string {
       <img class="contact-image" src="/assets/images/contact.png" alt="" loading="lazy">
       <form class="contact-form-wrap contact-form">
         <h2>İletişim</h2>
+        <input class="contact-solo" type="text" name="ad" placeholder="Ad" aria-label="Ad" autocomplete="given-name" required>
+        <input class="contact-solo" type="text" name="soyad" placeholder="Soyad" aria-label="Soyad" autocomplete="family-name" required>
         <div class="contact-row">
-          <input type="text" name="ad" placeholder="Ad" aria-label="Ad" autocomplete="given-name" required>
-          <input type="text" name="soyad" placeholder="Soyad" aria-label="Soyad" autocomplete="family-name" required>
           <input type="tel" name="telefon" placeholder="(5XX) XXX XX XX" aria-label="Telefon numarası"
                  autocomplete="tel" inputmode="numeric" maxlength="17">
-          <input type="email" name="eposta" placeholder="E-Posta" aria-label="E-posta" autocomplete="email" required>
           ${urunSecimiHTML()}
         </div>
+        <input class="contact-solo" type="email" name="eposta" placeholder="E-Posta" aria-label="E-posta" autocomplete="email" required>
         <input class="contact-konu" type="text" name="konu" placeholder="Konu Başlığı" aria-label="Konu başlığı">
         <textarea name="mesaj" placeholder="Mesaj" aria-label="Mesaj"></textarea>
         <label class="contact-checkbox">

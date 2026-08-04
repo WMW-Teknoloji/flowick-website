@@ -295,6 +295,7 @@ img{max-width:100%;display:block;}
 /* Tüm form alanları tek tipografi ve tek metin rengi paylaşır; girilen değer
    koyu (var(--text-default)), yer tutucu ayrı gri — eskiden ikisi de gri olduğu
    için yazılan metin silik görünüyordu. */
+.contact-solo,
 .contact-row input,
 .contact-row select,
 .contact-konu,
@@ -305,17 +306,19 @@ img{max-width:100%;display:block;}
   color:var(--text-default); box-sizing:border-box;
   transition:border-color 0.2s, box-shadow 0.2s;
 }
+/* Ad, Soyad, E-Posta: uzunluğu belirsiz metinler (uzun isim, uzun e-posta)
+   kesilmesin diye tam genişlik ve kendi satırında. */
+.contact-solo{display:block; width:100%; height:46px; margin-bottom:8px; padding:0 15px; text-overflow:ellipsis;}
 .contact-row input, .contact-row select{padding:0 10px; height:46px; flex:1; min-width:70px;}
-/* Ad ve Soyad eşit paydan dar kalıyordu; alanlar içeriklerinin uzunluğuna göre pay alır. */
-.contact-row input[name="ad"], .contact-row input[name="soyad"]{flex:1.7; min-width:120px;}
-/* Yer tutucu "(5XX) XXX XX XX" kesiliyordu; alan büyütüldü. */
-.contact-row input[name="telefon"]{flex:1.6; min-width:170px;}
-.contact-row input[name="eposta"]{flex:1.4;}
+/* Telefon ve ürün seçimi sabit/kısa içerik taşır, tek satırda eşleştirilir. */
+.contact-row input[name="telefon"]{flex:1.4; min-width:170px;}
 .contact-konu{display:block; width:100%; height:46px; margin-bottom:8px; padding:0 15px;}
 .contact-form-wrap textarea{width:100%; height:100px; margin-bottom:8px; padding:12px 15px; resize:none;}
+.contact-solo::placeholder,
 .contact-row input::placeholder,
 .contact-konu::placeholder,
 .contact-form-wrap textarea::placeholder{color:rgb(107,112,128); opacity:1;}
+.contact-solo:focus,
 .contact-row input:focus,
 .contact-row select:focus,
 .contact-konu:focus,
@@ -410,6 +413,7 @@ img{max-width:100%;display:block;}
 }
 @media (max-width:768px){
   /* iOS 16px altındaki alanlara odaklanınca sayfayı yakınlaştırıyor. */
+  .contact-solo,
   .contact-row input,
   .contact-row select,
   .contact-konu,
