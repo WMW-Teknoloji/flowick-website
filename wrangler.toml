@@ -1,3 +1,8 @@
 name = "flowick-website-page-deployment"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-06-01"
+
+# İletişim formunun IP başına hız sınırı sayacı (functions/api/contact.ts).
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "5c6910b20ae4423eaa800613feb64dd7"

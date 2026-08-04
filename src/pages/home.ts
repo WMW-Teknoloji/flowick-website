@@ -1,6 +1,6 @@
 import { initAccordion } from '../shared/accordion';
 import { initCertModal } from '../shared/modals';
-import { initContactForm } from '../forms';
+import { initContactForm, TURNSTILE_SITEKEY } from '../forms';
 import { getContainer } from '../router';
 
 export function renderHome(_params: Record<string, string>): void {
@@ -267,6 +267,7 @@ export function homeHTML(): string {
           <input type="checkbox" required>
           <span>Aydınlatma Metni kapsamında kimlik ve iletişim verilerimin Flowick Teknoloji Hizmetleri Anonim Şirketi tarafından hizmetlerinin tanıtımı, etkinlik ve haberlere ilişkin bilgilendirmelerin yapılması amacıyla işlenmesini ve bununla sınırlı olarak hizmet alınan üçüncü taraflar ile paylaşılmasını ve e-posta adresime reklam, tanıtım ve bilgilendirme vb. ticari elektronik ileti gönderilmesini kabul ediyorum.</span>
         </label>
+        <div class="cf-turnstile" data-sitekey="${TURNSTILE_SITEKEY}" data-action="turnstile-spin-v1"></div>
         <div class="contact-submit-row">
           <button type="submit" class="contact-submit">Gönder</button>
         </div>

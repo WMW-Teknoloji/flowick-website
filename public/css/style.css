@@ -311,6 +311,8 @@ img{max-width:100%;display:block;}
 .contact-checkbox{
   display:flex; align-items:flex-start; gap:8px; font-size:11px; color:#fff; line-height:1.5; margin-bottom:10px;
 }
+/* Turnstile widget'ı 300x65 basar; kap boşken de yer kaplasın ki düzen kaymasın (CLS). */
+.cf-turnstile{display:flex; justify-content:flex-end; min-height:65px; margin-bottom:10px;}
 .contact-submit-row{display:flex; justify-content:flex-end;}
 .contact-submit{
   background:rgb(205,205,205); font-family:'Poppins',sans-serif; font-size:14px; color:#fff;

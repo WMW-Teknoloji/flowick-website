@@ -2,7 +2,67 @@
 
 Güncelleme: 2026-08-04
 
-## Son tur (2026-08-04) — İLETİŞİM FORMU BOZUKTU, DÜZELTİLDİ
+## Son tur (2026-08-04, ikinci iş) — TURNSTILE + HIZ SINIRI
+
+Form çalışıyordu ama korumasızdı: herkes `/api/contact`'a sınırsız POST atıp
+Resend kotasını ve gelen kutusunu doldurabiliyordu. İki katman eklendi.
+
+**Mimari kararı:** siteverify çağrısı ayrı bir Worker'a değil, **mevcut Pages
+Function'ının içine** kondu. Ayrı Worker olsaydı saldırgan Worker'ı atlayıp
+doğrudan `/api/contact`'a POST atabilirdi — koruma kâğıt üstünde kalırdı.
+
+**İstek akışı** (`functions/api/contact.ts`):
+1. Ortam değişkeni kontrolü — `TURNSTILE_SECRET_KEY` artık **zorunlu** listesinde
+2. JSON çözümleme
+3. Jeton (`cf-turnstile-response`) yoksa → **400**
+4. Cloudflare siteverify → ağ/HTTP hatası **500**, `success:false` → **403**
+5. Hız sınırı (KV) → aşıldıysa **429**
+6. Alan doğrulaması → **400**
+7. Resend
+
+Sıra kasıtlı: **Turnstile hız sınırından önce**. Jetonu çözemeyen bot KV'ye hiç
+dokunmaz, yani KV ücretsiz kotası flood'da yanmaz.
+
+**Hız sınırı:** IP başına **15 dakikada 5 istek**, sabit pencere, KV sayacı
+(`hiz:contact:<ip>`, `expirationTtl 900`). KV atomik değil — eşzamanlı isteklerde
+sınır birkaç istek kayabilir, iletişim formu için kabul edilebilir.
+
+**Hata davranışı — bilerek asimetrik:**
+- `TURNSTILE_SECRET_KEY` yoksa → **fail-closed** (500). Güvenlik kontrolü sessizce
+  devre dışı kalmasın diye. **Bu yüzden secret push'tan ÖNCE girilmeli.**
+- KV bağlı değilse ya da okunamıyorsa → **fail-open** (form çalışır, `console.warn`).
+  Koruma kaybolur ama form ölmez.
+
+**Frontend** (`src/forms.ts`): `api.js?render=explicit` + JS ile açık çizim.
+SPA gezinmesinde form sonradan basıldığı için örtük (implicit) çizim ıskalardı.
+API henüz yüklenmemişse 100 ms'de bir yoklanır, 15 sn sonra bırakılır. Jeton
+**tek kullanımlık** — her denemeden sonra `finally` içinde `turnstile.reset()`.
+Jeton boşsa istek hiç atılmaz.
+
+**Altyapı:**
+- KV namespace `RATE_LIMIT` = `5c6910b20ae4423eaa800613feb64dd7`, `wrangler.toml`'de
+- Turnstile widget: hesap seviyesinde (zone altında DEĞİL), Managed, pre-clearance kapalı,
+  hostname'ler `flowick.com` / `www.flowick.com` / `localhost` / `127.0.0.1`
+- Sitekey `src/forms.ts`'te tek sabit; `home.ts` şablonu oradan okur (sürüklenme olmasın)
+- `.dev.vars` gitignore'a eklendi (eskiden değildi — secret sızma riskiydi)
+
+**Doğrulama:** 48 test yeşil (25 yeni). Ayrıca `wrangler pages dev` ile gerçek
+runtime'da: jetonsuz → 400, `2x00…` gizli anahtarıyla gerçek siteverify → 403,
+6. istek → 429, `--kv` bayrağı olmadan `env.RATE_LIMIT` bağlandı (yani binding
+`wrangler.toml`'den geliyor, canlıda da gelecek).
+
+**Tuzaklar:**
+- Turnstile paneli **hesap** seviyesinde: `dash.cloudflare.com/<account_id>/turnstile`.
+  Alan adının içinden bakınca görünmez.
+- wrangler OAuth token'ında Turnstile yetkisi **yok**; widget ya panelden ya da
+  `Account.Turnstile:Edit` izinli ayrı API token'la yaratılır.
+- Test anahtarları: `1x0000000000000000000000000000000AA` her zaman geçer,
+  `2x0000000000000000000000000000000AA` her zaman reddeder.
+
+**Açık kalan:** Rate limit yalnız `/api/contact`'ı korur; site geneli WAF kuralı yok.
+Sayaç IP başına — NAT arkasındaki ofis paylaşımlı sayaca düşer (5 istek/15 dk o ofis için).
+
+## Önceki tur (2026-08-04) — İLETİŞİM FORMU BOZUKTU, DÜZELTİLDİ
 
 **Arıza:** `POST /api/contact` canlıda 500 dönüyordu. Pages production ortamında
 `RESEND_API_KEY`, `TO_EMAIL`, `FROM_EMAIL` **hiç tanımlı değildi** (wrangler
@@ -31,9 +91,9 @@ domain, `noreply@flowick.com` sağlam) → aynı iş Function üzerinden 500 →
 **Canlı doğrulama:** push sonrası deployment `6a5a67e`, gerçek gönderim 200,
 mail `bora@flowick.com`'a `delivered`.
 
-**Kalan riskler:** bot koruması yok (Turnstile), rate limit yok, KVKK açık rıza
-kutusu kontrol edilmedi. Resend API anahtarı bir sohbet oturumunda açığa çıktı,
-sahibi aynı anahtarı kullanmayı seçti — rotasyon hâlâ önerilir.
+**Kalan riskler:** ~~bot koruması yok, rate limit yok~~ (ikinci turda kapatıldı),
+KVKK açık rıza kutusu kontrol edilmedi. Resend API anahtarı bir sohbet oturumunda
+açığa çıktı, sahibi aynı anahtarı kullanmayı seçti — rotasyon hâlâ önerilir.
 
 ## Durum
 
