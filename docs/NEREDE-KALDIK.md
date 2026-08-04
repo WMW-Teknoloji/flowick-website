@@ -1,6 +1,39 @@
 # NEREDE KALDIK — flowick-website
 
-Güncelleme: 2026-08-03
+Güncelleme: 2026-08-04
+
+## Son tur (2026-08-04) — İLETİŞİM FORMU BOZUKTU, DÜZELTİLDİ
+
+**Arıza:** `POST /api/contact` canlıda 500 dönüyordu. Pages production ortamında
+`RESEND_API_KEY`, `TO_EMAIL`, `FROM_EMAIL` **hiç tanımlı değildi** (wrangler
+`secret put` "Creating" dedi, yani yoklardı). Formu dolduran herkes kırmızı hata
+gördü, hiçbir başvuru ulaşmadı. Resend gönderim kaydına göre **17 Haziran'dan
+4 Ağustos'a kadar tek bir gerçek gönderim yok** — 7 hafta sessiz veri kaybı.
+
+**Teşhis zinciri:** doğrudan Resend API'ye gönderim 200 + `delivered` (anahtar,
+domain, `noreply@flowick.com` sağlam) → aynı iş Function üzerinden 500 →
+`pages secret list` boş. Yani kod ve Resend değil, ortam değişkenleri.
+
+**Yapılanlar:**
+1. Üç değişken Pages production'a **Secret** olarak girildi
+   (`wrangler pages secret put ... --project-name flowick-website-page-deployment`).
+   `TO_EMAIL` = `bora@flowick.com` (sahibi bu adresi okuduğunu doğruladı;
+   `developer@flowick.com`'a 7 test teslim edilmişti ama kimse görmüyordu).
+2. `functions/api/contact.ts` sertleştirildi (commit `6a5a67e`):
+   ortam değişkeni doğrulaması + eksik olanın adıyla log, Resend/ağ hatalarının
+   durum kodu + gövdeyle loglanması, HTML kaçışı, satır sonu → `<br>`,
+   e-posta biçim doğrulaması (400, eskiden 500'e düşüyordu), `TO_EMAIL` için
+   virgülle çoklu alıcı.
+3. `wrangler.toml` proje adı gerçek Pages projesiyle eşitlendi
+   (`flowick-website` → `flowick-website-page-deployment`).
+4. 13 test eklendi (`functions/api/contact.test.ts`), toplam 23 yeşil.
+
+**Canlı doğrulama:** push sonrası deployment `6a5a67e`, gerçek gönderim 200,
+mail `bora@flowick.com`'a `delivered`.
+
+**Kalan riskler:** bot koruması yok (Turnstile), rate limit yok, KVKK açık rıza
+kutusu kontrol edilmedi. Resend API anahtarı bir sohbet oturumunda açığa çıktı,
+sahibi aynı anahtarı kullanmayı seçti — rotasyon hâlâ önerilir.
 
 ## Durum
 
@@ -54,6 +87,8 @@ servis ediliyor (Cloudflare "Managed robots.txt" kapatıldı), `sitemap.xml` eri
 
 ## Sıradaki adaylar (öncelik sırasıyla)
 
+0. **Turnstile + rate limit** — `/api/contact` şu an korumasız; bot bulursa gelen
+   kutusu ve Resend kotası yanar. `turnstile-spin` skill'i uçtan uca kuruyor.
 1. Search Console kaydı + sitemap gönderimi (Google hesabı gerekli)
 2. GA4 kurulumu (dönüşüm: form gönderimi, telefon tıklaması, store linkleri)
 3. Blog içerik takvimi (BPM/süreç yönetimi anahtar kelimeleri; mevcut 3 yazı iyi bir çekirdek)
@@ -67,6 +102,14 @@ servis ediliyor (Cloudflare "Managed robots.txt" kapatıldı), `sitemap.xml` eri
   `<meta name="description" ...>` yapısı değişirse `scripts/prerender.ts` regex'leri güncellenmeli
   (bulamazsa hata fırlatır, sessiz geçmez).
 - Kaynak dosyalar UTF-8; PowerShell'de `Get-Content` mojibake gösterir, aldırma.
+- **Pages ortam değişkeni değiştirmek tek başına yetmez** — mevcut deployment eski
+  ortamla çalışmaya devam eder, yeni deployment şart (push ya da "Retry deployment").
+- **Gerçek Pages projesi `flowick-website-page-deployment`**, repo adı `flowick-website`.
+  `--project-name` vermeden deploy edersen yanlış/yeni projeye gider. `wrangler.toml`
+  artık doğru adı taşıyor, bozma.
+- **Canlı formu mail göndermeden yoklamak:** bozuk biçimli e-posta gönder
+  (`{"ad":"x","eposta":"gecersiz"}`); yeni sürüm 400 "Geçerli bir e-posta adresi girin."
+  döndürür, Resend'e hiç gitmez. Deployment'ın geçtiğini anlamanın ucuz yolu.
 - Prerender çıktısı **`foo.html`** biçiminde yazılır, `foo/index.html` DEĞİL. Cloudflare Pages
   ikincisini `/foo/` altında servis edip `/foo`yu 308'ler; kanonik URL'lerimiz eğik çizgisiz
   olduğu için bu yönlendirme zinciri istenmiyor.
