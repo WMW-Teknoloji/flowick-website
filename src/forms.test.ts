@@ -5,6 +5,7 @@ const FORM_HTML = `
   <form class="contact-form">
     <input type="text" name="ad" value="Berke">
     <input type="email" name="eposta" value="berke@example.com">
+    <input type="tel" name="telefon" maxlength="11">
     <div class="cf-turnstile" data-sitekey="${'0x4AAAAAAEGHIvMD2W44X0ZR'}" data-action="turnstile-spin-v1"></div>
     <button type="submit" class="contact-submit">Gönder</button>
     <div class="form-status"></div>
@@ -116,6 +117,65 @@ describe('initContactForm — gönderim kapısı', () => {
     const gonderilen = JSON.parse(secenekler.body as string);
     expect(gonderilen['cf-turnstile-response']).toBe('jeton-42');
     expect(gonderilen.ad).toBe('Berke');
+  });
+});
+
+describe('initContactForm — telefon alanı', () => {
+  function telefon(): HTMLInputElement {
+    return document.querySelector<HTMLInputElement>('input[name="telefon"]')!;
+  }
+
+  function telefonYaz(deger: string): void {
+    telefon().value = deger;
+    telefon().dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  it('rakam dışındaki karakterleri atar', () => {
+    initContactForm();
+    telefonYaz('0(555) 111-22 33abc');
+
+    expect(telefon().value).toBe('05551112233');
+  });
+
+  it('11 haneden fazlasını kabul etmez', () => {
+    initContactForm();
+    telefonYaz('055511122334455');
+
+    expect(telefon().value).toBe('05551112233');
+  });
+
+  it('eksik haneli numarayla gönderim yapılmaz', async () => {
+    (window as unknown as Record<string, unknown>).turnstile = sahteTurnstile();
+
+    initContactForm();
+    telefonYaz('0555');
+    formuGonder();
+    await vi.waitFor(() => expect(durumMetni()).not.toBe(''));
+
+    expect(fetchSahte).not.toHaveBeenCalled();
+    expect(durumMetni()).toContain('Telefon');
+  });
+
+  it('telefon boş bırakılabilir', async () => {
+    (window as unknown as Record<string, unknown>).turnstile = sahteTurnstile();
+
+    initContactForm();
+    formuGonder();
+    await vi.waitFor(() => expect(fetchSahte).toHaveBeenCalled());
+
+    expect(fetchSahte).toHaveBeenCalledTimes(1);
+  });
+
+  it('10 haneli numara kabul edilir', async () => {
+    (window as unknown as Record<string, unknown>).turnstile = sahteTurnstile();
+
+    initContactForm();
+    telefonYaz('5551112233');
+    formuGonder();
+    await vi.waitFor(() => expect(fetchSahte).toHaveBeenCalled());
+
+    const gonderilen = JSON.parse((fetchSahte.mock.calls[0] as [string, RequestInit])[1].body as string);
+    expect(gonderilen.telefon).toBe('5551112233');
   });
 });
 

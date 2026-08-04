@@ -306,6 +306,10 @@ img{max-width:100%;display:block;}
   transition:border-color 0.2s, box-shadow 0.2s;
 }
 .contact-row input, .contact-row select{padding:0 10px; height:46px; flex:1; min-width:70px;}
+/* Ad ve Soyad eşit paydan dar kalıyordu; alanlar içeriklerinin uzunluğuna göre pay alır. */
+.contact-row input[name="ad"], .contact-row input[name="soyad"]{flex:1.3;}
+.contact-row input[name="telefon"]{flex:1.05;}
+.contact-row input[name="eposta"]{flex:1.4;}
 .contact-konu{display:block; width:100%; height:46px; margin-bottom:8px; padding:0 15px;}
 .contact-form-wrap textarea{width:100%; height:100px; margin-bottom:8px; padding:12px 15px; resize:none;}
 .contact-row input::placeholder,
@@ -341,6 +345,37 @@ img{max-width:100%;display:block;}
   display:inline-block; background:#fff; color:rgb(178,32,20);
   font-weight:600; border-radius:8px; padding:6px 12px;
 }
+
+/* ===== ÖZEL AÇILIR LİSTE (ürün seçimi) =====
+   Yerel select'in açılan listesini tarayıcı çiziyor, yüksekliği sınırlanamıyordu;
+   21 seçenekle ekranın dibine kadar uzuyordu. Burada liste sıradan bir öğe. */
+.secim{position:relative; flex:1.15; min-width:150px;}
+.secim-dugme{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  width:100%; height:46px; padding:0 12px; text-align:left;
+  background:rgb(252,252,252); box-shadow:0 4px 16px 4px rgba(171,171,171,0.15);
+  border:1px solid transparent; border-radius:10px; cursor:pointer;
+  font-family:'Poppins',sans-serif; font-size:14px; line-height:1.5;
+  transition:border-color 0.2s;
+}
+.secim-dugme:focus-visible{outline:3px solid var(--text-default); outline-offset:2px;}
+.secim-deger{color:rgb(107,112,128); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.secim--dolu .secim-deger{color:var(--text-default);}
+.secim-ok{flex-shrink:0; color:rgb(107,112,128); transition:transform 0.2s;}
+.secim--acik .secim-ok{transform:rotate(180deg);}
+.secim-liste{
+  position:absolute; top:calc(100% + 6px); right:0; z-index:20;
+  min-width:100%; width:max-content; max-width:280px; max-height:260px; overflow-y:auto;
+  margin:0; padding:6px; list-style:none;
+  background:#fff; border-radius:10px; box-shadow:0 12px 30px rgba(9,23,71,0.22);
+}
+.secim-secenek{
+  padding:9px 12px; border-radius:8px; cursor:pointer;
+  font-family:'Poppins',sans-serif; font-size:14px; color:var(--text-default);
+  transition:background-color 0.15s;
+}
+.secim-secenek:hover, .secim-secenek--etkin{background:rgba(9,23,71,0.09);}
+.secim-secenek[aria-selected="true"]{background:rgba(9,23,71,0.06); font-weight:600;}
 
 /* ===== TOAST / BİLDİRİM ===== */
 .toast-alani{

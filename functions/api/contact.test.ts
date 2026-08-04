@@ -330,6 +330,41 @@ describe('onRequestPost — girdi doğrulaması', () => {
     expect(resendCagrildi()).toBe(false);
   });
 
+  it('telefon boş bırakılabilir', async () => {
+    const res = await cagir({ ...GECERLI_GOVDE, telefon: '' });
+
+    expect(res.status).toBe(200);
+  });
+
+  it('eksik haneli telefon için 400 döner', async () => {
+    const res = await cagir({ ...GECERLI_GOVDE, telefon: '0555' });
+
+    expect(res.status).toBe(400);
+    await expect(res.json()).resolves.toEqual({
+      error: 'Telefon numarası 10 veya 11 haneli olmalı.',
+    });
+    expect(resendCagrildi()).toBe(false);
+  });
+
+  it('11 haneden uzun telefon için 400 döner', async () => {
+    const res = await cagir({ ...GECERLI_GOVDE, telefon: '055511122334455' });
+
+    expect(res.status).toBe(400);
+    expect(resendCagrildi()).toBe(false);
+  });
+
+  it('rakam dışı karakterler ayıklandıktan sonra değerlendirilir', async () => {
+    const res = await cagir({ ...GECERLI_GOVDE, telefon: '0(555) 111 22 33' });
+
+    expect(res.status).toBe(200);
+  });
+
+  it('10 haneli numara kabul edilir', async () => {
+    const res = await cagir({ ...GECERLI_GOVDE, telefon: '5551112233' });
+
+    expect(res.status).toBe(200);
+  });
+
   it('biçimi bozuk e-posta için 400 döner', async () => {
     const res = await cagir({ ...GECERLI_GOVDE, eposta: 'berke-at-example' });
 

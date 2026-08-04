@@ -66,6 +66,20 @@ function turnstileKur(form: HTMLFormElement): void {
   setTimeout(() => clearInterval(yoklama), YOKLAMA_SURESI_MS);
 }
 
+// Türkiye numaraları: 0 ile 11 hane (05551112233) ya da 0'sız 10 hane (5551112233).
+const TELEFON_EN_AZ_HANE = 10;
+const TELEFON_EN_COK_HANE = 11;
+
+function telefonAlaniniKur(form: HTMLFormElement): void {
+  const alan = form.querySelector<HTMLInputElement>('input[name="telefon"]');
+  if (!alan) return;
+
+  alan.addEventListener('input', () => {
+    const rakamlar = alan.value.replace(/\D/g, '').slice(0, TELEFON_EN_COK_HANE);
+    if (alan.value !== rakamlar) alan.value = rakamlar;
+  });
+}
+
 /** Hata rengi satır içi stil yerine sınıfla verilir; turuncu zeminde okunur biçim CSS'te. */
 function durumYaz(kutu: HTMLElement, mesaj: string, hata = false): void {
   kutu.textContent = mesaj;
@@ -77,6 +91,7 @@ export function initContactForm(): void {
   if (!form) return;
 
   turnstileKur(form);
+  telefonAlaniniKur(form);
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -86,6 +101,12 @@ export function initContactForm(): void {
 
     const data = Object.fromEntries(new FormData(form).entries());
     const jeton = data['cf-turnstile-response'];
+
+    const telefon = typeof data.telefon === 'string' ? data.telefon : '';
+    if (telefon !== '' && (telefon.length < TELEFON_EN_AZ_HANE || telefon.length > TELEFON_EN_COK_HANE)) {
+      durumYaz(status, 'Telefon numarası 10 veya 11 haneli olmalı.', true);
+      return;
+    }
 
     if (typeof jeton !== 'string' || jeton === '') {
       durumYaz(status, 'Lütfen güvenlik doğrulamasını tamamlayın.', true);

@@ -1,6 +1,8 @@
 import { initAccordion } from '../shared/accordion';
 import { initCertModal } from '../shared/modals';
 import { initContactForm, TURNSTILE_SITEKEY } from '../forms';
+import { initOzelSecimler } from '../select';
+import { escapeAttr } from '../shared/escape';
 import { getContainer } from '../router';
 
 export function renderHome(_params: Record<string, string>): void {
@@ -8,7 +10,56 @@ export function renderHome(_params: Record<string, string>): void {
   container.innerHTML = homeHTML();
   initAccordion();
   initCertModal();
+  initOzelSecimler();
   initContactForm();
+}
+
+// İletişim formundaki ürün listesi; ürünler sayfasının kart listesinden ayrıdır.
+const ILETISIM_URUNLERI = [
+  'Organizasyon Yönetimi',
+  'İnsan Kaynakları Yönetimi',
+  'Avans Masraf Yönetimi',
+  'Görev Yönetimi',
+  'Ürün ve Envanter Yönetimi',
+  'Stok Yönetimi',
+  'Müşteri İlişkileri Yönetimi',
+  'PDKS',
+  'Puantaj ve Hakedişler',
+  'Proje Yönetimi',
+  'Hedef Yönetimi',
+  'Satın Alma Yönetimi',
+  'Üretim Yönetimi',
+  'Kalite Kontrol Yönetimi',
+  'Malzeme Tedarik Planlama',
+  'Finans Yönetimi',
+  'Değerlendirme Yönetimi',
+  'Hatırlatma Yönetimi',
+  'Eğitim Yönetimi',
+  'Lojistik Yönetimi',
+  'İntranet',
+];
+
+/**
+ * Yerel `<select>` yerine özel açılır liste: yerel listenin yüksekliğini tarayıcı
+ * belirliyor ve 21 seçenekle ekranın dibine kadar uzuyordu. Değer gizli girdide
+ * durur, form alan adı (`urun`) değişmez.
+ */
+function urunSecimiHTML(): string {
+  const secenekler = ILETISIM_URUNLERI.map(
+    (urun) =>
+      `<li class="secim-secenek" role="option" aria-selected="false">${escapeAttr(urun)}</li>`,
+  ).join('\n            ');
+
+  return `<div class="secim" data-secim>
+            <input type="hidden" name="urun">
+            <button type="button" class="secim-dugme" aria-haspopup="listbox" aria-expanded="false" aria-label="Ürün seçiniz">
+              <span class="secim-deger" data-secim-deger>Ürün Seçiniz</span>
+              <svg class="secim-ok" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <ul class="secim-liste" role="listbox" aria-label="Ürünler" hidden>
+            ${secenekler}
+            </ul>
+          </div>`;
 }
 
 const referenceLogos: Array<{ src: string; alt: string }> = [
@@ -232,37 +283,16 @@ export function homeHTML(): string {
       <form class="contact-form-wrap contact-form">
         <h2>İletişim</h2>
         <div class="contact-row">
-          <input type="text" name="ad" placeholder="Ad" required>
-          <input type="text" name="soyad" placeholder="Soyad" required>
-          <input type="tel" name="telefon" placeholder="Telefon">
-          <input type="email" name="eposta" placeholder="E-Posta" required>
-          <select name="urun">
-            <option selected disabled>Ürün Seçiniz</option>
-            <option>Organizasyon Yönetimi</option>
-            <option>İnsan Kaynakları Yönetimi</option>
-            <option>Avans Masraf Yönetimi</option>
-            <option>Görev Yönetimi</option>
-            <option>Ürün ve Envanter Yönetimi</option>
-            <option>Stok Yönetimi</option>
-            <option>Müşteri İlişkileri Yönetimi</option>
-            <option>PDKS</option>
-            <option>Puantaj ve Hakedişler</option>
-            <option>Proje Yönetimi</option>
-            <option>Hedef Yönetimi</option>
-            <option>Satın Alma Yönetimi</option>
-            <option>Üretim Yönetimi</option>
-            <option>Kalite Kontrol Yönetimi</option>
-            <option>Malzeme Tedarik Planlama</option>
-            <option>Finans Yönetimi</option>
-            <option>Değerlendirme Yönetimi</option>
-            <option>Hatırlatma Yönetimi</option>
-            <option>Eğitim Yönetimi</option>
-            <option>Lojistik Yönetimi</option>
-            <option>İntranet</option>
-          </select>
+          <input type="text" name="ad" placeholder="Ad" aria-label="Ad" autocomplete="given-name" required>
+          <input type="text" name="soyad" placeholder="Soyad" aria-label="Soyad" autocomplete="family-name" required>
+          <input type="tel" name="telefon" placeholder="Telefon" aria-label="Telefon"
+                 autocomplete="tel" inputmode="numeric" maxlength="11" pattern="[0-9]{10,11}"
+                 title="10 veya 11 haneli telefon numarası">
+          <input type="email" name="eposta" placeholder="E-Posta" aria-label="E-posta" autocomplete="email" required>
+          ${urunSecimiHTML()}
         </div>
-        <input class="contact-konu" type="text" name="konu" placeholder="Konu Başlığı">
-        <textarea name="mesaj" placeholder="Mesaj"></textarea>
+        <input class="contact-konu" type="text" name="konu" placeholder="Konu Başlığı" aria-label="Konu başlığı">
+        <textarea name="mesaj" placeholder="Mesaj" aria-label="Mesaj"></textarea>
         <label class="contact-checkbox">
           <input type="checkbox" required>
           <span>Aydınlatma Metni kapsamında kimlik ve iletişim verilerimin Flowick Teknoloji Hizmetleri Anonim Şirketi tarafından hizmetlerinin tanıtımı, etkinlik ve haberlere ilişkin bilgilendirmelerin yapılması amacıyla işlenmesini ve bununla sınırlı olarak hizmet alınan üçüncü taraflar ile paylaşılmasını ve e-posta adresime reklam, tanıtım ve bilgilendirme vb. ticari elektronik ileti gönderilmesini kabul ediyorum.</span>

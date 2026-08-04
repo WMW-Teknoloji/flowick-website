@@ -38,7 +38,12 @@ const HIZ_PENCERESI_SANIYE = 900;
 
 const EPOSTA_DESENI = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Türkiye numaraları: 0 ile 11 hane, 0'sız 10 hane. Alan isteğe bağlı.
+const TELEFON_EN_AZ_HANE = 10;
+const TELEFON_EN_COK_HANE = 11;
+
 const GENEL_HATA = 'Mail gönderilemedi, lütfen tekrar deneyin.';
+const TELEFON_HATASI = 'Telefon numarası 10 veya 11 haneli olmalı.';
 const DOGRULAMA_EKSIK = 'Doğrulama tamamlanmadı, lütfen kutucuğu işaretleyin.';
 const DOGRULAMA_BASARISIZ = 'Doğrulama başarısız, sayfayı yenileyip tekrar deneyin.';
 const COK_ISTEK = 'Çok fazla istek gönderdiniz. Lütfen 15 dakika sonra tekrar deneyin.';
@@ -165,6 +170,14 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
 
   if (!EPOSTA_DESENI.test(eposta)) {
     return Response.json({ error: 'Geçerli bir e-posta adresi girin.' }, { status: 400 });
+  }
+
+  const telefonHaneleri = (telefon ?? '').replace(/\D/g, '');
+  if (
+    telefonHaneleri !== '' &&
+    (telefonHaneleri.length < TELEFON_EN_AZ_HANE || telefonHaneleri.length > TELEFON_EN_COK_HANE)
+  ) {
+    return Response.json({ error: TELEFON_HATASI }, { status: 400 });
   }
 
   const emailHtml = `
