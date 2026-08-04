@@ -286,7 +286,7 @@ export function homeHTML(): string {
           <input type="text" name="ad" placeholder="Ad" aria-label="Ad" autocomplete="given-name" required>
           <input type="text" name="soyad" placeholder="Soyad" aria-label="Soyad" autocomplete="family-name" required>
           <input type="tel" name="telefon" placeholder="(5XX) XXX XX XX" aria-label="Telefon numarası"
-                 autocomplete="tel" inputmode="numeric">
+                 autocomplete="tel" inputmode="numeric" maxlength="17">
           <input type="email" name="eposta" placeholder="E-Posta" aria-label="E-posta" autocomplete="email" required>
           ${urunSecimiHTML()}
         </div>

@@ -2,7 +2,21 @@
 
 Güncelleme: 2026-08-04
 
-## Son tur (2026-08-04, beşinci iş) — TELEFON MASKESİ + AD/SOYAD GENİŞLİĞİ
+## Son tur (2026-08-04, altıncı iş) — TELEFON GÜVENLİK AĞI
+
+Sahibi telefon alanına sınırsız rakam girilebildiğini bildirdi. Maskeyi eklerken
+native `maxlength`'i tamamen kaldırmıştım — **JS herhangi bir sebeple çalışmazsa**
+(script hatası, engelleyici, eski önbellek) alan tümüyle sınırsız kalıyordu; eski
+sürümde en azından `maxlength="11"` vardı. `maxlength="17"` geri koyuldu —
+tam olarak maskenin üretebileceği en uzun string uzunluğu (`0 (555) 111 22 33`),
+yani JS çalışırken hiçbir zaman devreye girmez, yalnızca JS çalışmadığında
+güvenlik ağı olur. (`pattern` geri KONMADI — o, biçimlenmiş değerle eşleşmeyip
+submit'i sessizce engelliyordu, bkz beşinci iş notu.)
+
+E-posta ayrıca soruldu: `type="email"` + `required` zaten native taranıyor,
+`novalidate` yok, ek işlem gerekmedi.
+
+## Önceki tur (2026-08-04, beşinci iş) — TELEFON MASKESİ + AD/SOYAD GENİŞLİĞİ
 
 Sahibi ad/soyad'ın hâlâ dar olduğunu ve telefonun görsel bir kalıp göstermesini istedi.
 
