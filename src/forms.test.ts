@@ -13,7 +13,7 @@ const FORM_HTML = `
 
 function sahteTurnstile(jeton = 'jeton-1') {
   return {
-    render: vi.fn((kap: HTMLElement, _secenekler: { sitekey: string; action?: string }) => {
+    render: vi.fn((kap: HTMLElement, _secenekler: { sitekey: string; action?: string; theme?: string }) => {
       const gizli = document.createElement('input');
       gizli.type = 'hidden';
       gizli.name = 'cf-turnstile-response';
@@ -62,6 +62,7 @@ describe('initContactForm — Turnstile widget çizimi', () => {
     expect(kap.className).toBe('cf-turnstile');
     expect(secenekler.sitekey).toBe(TURNSTILE_SITEKEY);
     expect(secenekler.action).toBe('turnstile-spin-v1');
+    expect(secenekler.theme).toBe('light');
   });
 
   it('API sonradan yüklenirse widget yine çizilir', () => {

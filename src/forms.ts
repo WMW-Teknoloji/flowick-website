@@ -1,5 +1,7 @@
 export const TURNSTILE_SITEKEY = '0x4AAAAAAEGHIvMD2W44X0ZR';
 const TURNSTILE_ACTION = 'turnstile-spin-v1';
+// Form turuncu zeminde; Turnstile'ın varsayılan koyu teması tokuşuyordu.
+const TURNSTILE_TEMA = 'light';
 
 // api.js `render=explicit` ile yükleniyor; hazır olması main.ts'ten bağımsız,
 // bu yüzden kısa aralıklarla yoklayıp bir kez çiziyoruz.
@@ -7,7 +9,10 @@ const YOKLAMA_ARALIGI_MS = 100;
 const YOKLAMA_SURESI_MS = 15_000;
 
 interface TurnstileApi {
-  render(kap: HTMLElement, secenekler: { sitekey: string; action?: string }): string;
+  render(
+    kap: HTMLElement,
+    secenekler: { sitekey: string; action?: string; theme?: string },
+  ): string;
   reset(widgetKimligi?: string): void;
   remove(widgetKimligi: string): void;
 }
@@ -34,7 +39,11 @@ function widgetiCiz(kap: HTMLElement): void {
     widgetKimligi = undefined;
   }
 
-  widgetKimligi = api.render(kap, { sitekey: TURNSTILE_SITEKEY, action: TURNSTILE_ACTION });
+  widgetKimligi = api.render(kap, {
+    sitekey: TURNSTILE_SITEKEY,
+    action: TURNSTILE_ACTION,
+    theme: TURNSTILE_TEMA,
+  });
 }
 
 function turnstileKur(form: HTMLFormElement): void {
