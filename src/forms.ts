@@ -1,3 +1,5 @@
+import { bildirimGoster } from './toast';
+
 export const TURNSTILE_SITEKEY = '0x4AAAAAAEGHIvMD2W44X0ZR';
 const TURNSTILE_ACTION = 'turnstile-spin-v1';
 // Form turuncu zeminde; Turnstile'ın varsayılan koyu teması tokuşuyordu.
@@ -64,6 +66,12 @@ function turnstileKur(form: HTMLFormElement): void {
   setTimeout(() => clearInterval(yoklama), YOKLAMA_SURESI_MS);
 }
 
+/** Hata rengi satır içi stil yerine sınıfla verilir; turuncu zeminde okunur biçim CSS'te. */
+function durumYaz(kutu: HTMLElement, mesaj: string, hata = false): void {
+  kutu.textContent = mesaj;
+  kutu.classList.toggle('form-status--hata', hata && mesaj !== '');
+}
+
 export function initContactForm(): void {
   const form = document.querySelector<HTMLFormElement>('.contact-form');
   if (!form) return;
@@ -80,14 +88,12 @@ export function initContactForm(): void {
     const jeton = data['cf-turnstile-response'];
 
     if (typeof jeton !== 'string' || jeton === '') {
-      status.textContent = 'Lütfen güvenlik doğrulamasını tamamlayın.';
-      status.style.color = '#e74c3c';
+      durumYaz(status, 'Lütfen güvenlik doğrulamasını tamamlayın.', true);
       return;
     }
 
     btn.disabled = true;
-    status.textContent = 'Gönderiliyor...';
-    status.style.color = '';
+    durumYaz(status, 'Gönderiliyor...');
 
     try {
       const res = await fetch('/api/contact', {
@@ -98,16 +104,15 @@ export function initContactForm(): void {
       const json = (await res.json()) as { success?: boolean; error?: string };
 
       if (res.ok && json.success) {
-        status.textContent = 'Mesajınız alındı, en kısa sürede size dönüş yapacağız.';
-        status.style.color = '#2ecc71';
+        // Başarı geçici bilgi: sayfa üstünde bildirime çıkar, formun altını temiz bırak.
+        durumYaz(status, '');
+        bildirimGoster('Mesajınız alındı, en kısa sürede size dönüş yapacağız.');
         form.reset();
       } else {
-        status.textContent = json.error ?? 'Bir hata oluştu, lütfen tekrar deneyin.';
-        status.style.color = '#e74c3c';
+        durumYaz(status, json.error ?? 'Bir hata oluştu, lütfen tekrar deneyin.', true);
       }
     } catch {
-      status.textContent = 'Bağlantı hatası, lütfen tekrar deneyin.';
-      status.style.color = '#e74c3c';
+      durumYaz(status, 'Bağlantı hatası, lütfen tekrar deneyin.', true);
     } finally {
       btn.disabled = false;
       // Jeton tek kullanımlık: her denemeden sonra tazelenmeli.

@@ -292,21 +292,31 @@ img{max-width:100%;display:block;}
 }
 .contact-form-wrap h2{font-size:36px; font-weight:bold; color:#fff; margin:0 0 14px;}
 .contact-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px;}
-.contact-row input, .contact-row select{
-  background:rgb(252,252,252); box-shadow:0 4px 16px 4px rgba(171,171,171,0.15);
-  border:1px solid transparent; border-radius:10px; font-family:'Poppins',sans-serif;
-  font-size:13px; color:rgb(156,156,156); padding:0 10px; height:46px; flex:1; min-width:70px;
-}
-.contact-konu{
-  display:block; width:100%; height:46px; margin-bottom:8px;
-  background:rgb(252,252,252); box-shadow:0 4px 16px 4px rgba(171,171,171,0.15);
-  border:1px solid transparent; border-radius:10px; font-family:'Poppins',sans-serif;
-  font-size:13px; color:rgb(156,156,156); padding:0 15px; box-sizing:border-box;
-}
+/* Tüm form alanları tek tipografi ve tek metin rengi paylaşır; girilen değer
+   koyu (var(--text-default)), yer tutucu ayrı gri — eskiden ikisi de gri olduğu
+   için yazılan metin silik görünüyordu. */
+.contact-row input,
+.contact-row select,
+.contact-konu,
 .contact-form-wrap textarea{
-  width:100%; height:100px; margin-bottom:8px; border:1px solid transparent; border-radius:10px;
   background:rgb(252,252,252); box-shadow:0 4px 16px 4px rgba(171,171,171,0.15);
-  font-family:'Poppins',sans-serif; font-size:13px; color:rgb(173,173,173); padding:12px 15px; resize:none; box-sizing:border-box;
+  border:1px solid transparent; border-radius:10px;
+  font-family:'Poppins',sans-serif; font-size:14px; line-height:1.5;
+  color:var(--text-default); box-sizing:border-box;
+  transition:border-color 0.2s, box-shadow 0.2s;
+}
+.contact-row input, .contact-row select{padding:0 10px; height:46px; flex:1; min-width:70px;}
+.contact-konu{display:block; width:100%; height:46px; margin-bottom:8px; padding:0 15px;}
+.contact-form-wrap textarea{width:100%; height:100px; margin-bottom:8px; padding:12px 15px; resize:none;}
+.contact-row input::placeholder,
+.contact-konu::placeholder,
+.contact-form-wrap textarea::placeholder{color:rgb(107,112,128); opacity:1;}
+.contact-row input:focus,
+.contact-row select:focus,
+.contact-konu:focus,
+.contact-form-wrap textarea:focus{
+  outline:3px solid var(--text-default); outline-offset:2px;
+  border-color:var(--text-default);
 }
 .contact-checkbox{
   display:flex; align-items:flex-start; gap:8px; font-size:11px; color:#fff; line-height:1.5; margin-bottom:10px;
@@ -314,12 +324,62 @@ img{max-width:100%;display:block;}
 /* Turnstile widget'ı 300x65 basar; kap boşken de yer kaplasın ki düzen kaymasın (CLS). */
 .cf-turnstile{display:flex; justify-content:flex-end; min-height:65px; margin-bottom:10px;}
 .contact-submit-row{display:flex; justify-content:flex-end;}
+/* Gri artık YALNIZCA gerçekten devre dışıyken (gönderim sürerken) görünür.
+   Eskiden varsayılan hâli griydi, tıklanabilir olmasına rağmen pasif duruyordu. */
 .contact-submit{
-  background:rgb(205,205,205); font-family:'Poppins',sans-serif; font-size:14px; color:#fff;
-  text-align:center; border-radius:6px; border:none; width:170px; height:45px; cursor:pointer;
+  background:var(--text-default); font-family:'Poppins',sans-serif; font-size:15px; font-weight:600;
+  color:#fff; text-align:center; border-radius:6px; border:none; width:170px; height:45px;
+  cursor:pointer; box-shadow:0 4px 14px rgba(9,23,71,0.25);
+  transition:background-color 0.2s, box-shadow 0.2s;
 }
-.contact-submit.active{background:var(--text-default);}
-.form-status{color:#fff; font-size:13px; margin-top:8px; min-height:18px;}
+.contact-submit:hover:not(:disabled){background:rgb(20,44,120); box-shadow:0 6px 18px rgba(9,23,71,0.35);}
+.contact-submit:focus-visible{outline:3px solid #fff; outline-offset:3px;}
+.contact-submit:disabled{background:rgb(205,205,205); box-shadow:none; cursor:not-allowed;}
+.form-status{font-family:'Poppins',sans-serif; font-size:13px; margin-top:8px; min-height:18px; color:#fff;}
+/* Turuncu zeminde kırmızı yazı okunmuyordu; hata beyaz hapta koyu kırmızı basılır. */
+.form-status--hata{
+  display:inline-block; background:#fff; color:rgb(178,32,20);
+  font-weight:600; border-radius:8px; padding:6px 12px;
+}
+
+/* ===== TOAST / BİLDİRİM ===== */
+.toast-alani{
+  position:fixed; top:80px; left:50%; transform:translateX(-50%);
+  z-index:1200; width:min(92vw,420px); pointer-events:none;
+}
+.toast{
+  display:flex; align-items:flex-start; gap:10px; pointer-events:auto;
+  background:#fff; color:var(--text-default); border-radius:12px;
+  padding:14px; border-left:5px solid rgb(21,128,61);
+  box-shadow:0 12px 32px rgba(9,23,71,0.22);
+  font-family:'Poppins',sans-serif; font-size:14px; line-height:1.45;
+  animation:toast-gir 0.25s ease-out;
+}
+.toast--hata{border-left-color:rgb(178,32,20);}
+.toast-ikon{display:flex; flex-shrink:0; margin-top:1px; color:rgb(21,128,61);}
+.toast--hata .toast-ikon{color:rgb(178,32,20);}
+.toast-metin{margin:0; flex:1;}
+.toast-kapat{
+  display:grid; place-items:center; width:36px; height:36px; margin:-6px -6px -6px 0;
+  background:none; border:none; border-radius:8px; color:rgb(107,112,128); cursor:pointer;
+  transition:color 0.2s, background-color 0.2s;
+}
+.toast-kapat:hover{color:var(--text-default); background:rgba(9,23,71,0.07);}
+.toast-kapat:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
+.toast--kapaniyor{animation:toast-cik 0.25s ease-in forwards;}
+@keyframes toast-gir{from{opacity:0; transform:translateY(-12px);} to{opacity:1; transform:none;}}
+@keyframes toast-cik{to{opacity:0; transform:translateY(-12px);}}
+@media (prefers-reduced-motion:reduce){
+  .toast, .toast--kapaniyor{animation:none;}
+}
+@media (max-width:768px){
+  /* iOS 16px altındaki alanlara odaklanınca sayfayı yakınlaştırıyor. */
+  .contact-row input,
+  .contact-row select,
+  .contact-konu,
+  .contact-form-wrap textarea{font-size:16px;}
+  .toast-alani{top:70px; width:calc(100vw - 24px);}
+}
 .wave{display:block; width:100%;}
 
 /* WhatsApp floating button */

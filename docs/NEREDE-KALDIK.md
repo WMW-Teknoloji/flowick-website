@@ -2,7 +2,35 @@
 
 Güncelleme: 2026-08-04
 
-## Son tur (2026-08-04, ikinci iş) — TURNSTILE + HIZ SINIRI
+## Son tur (2026-08-04, üçüncü iş) — İLETİŞİM FORMU ARAYÜZ CİLASI
+
+Sahibinin bildirdiği üç şikâyet:
+
+1. **Girilen değerler silikti.** Alanların `color`'ı yer tutucu grisiydi
+   (`rgb(156,156,156)`), yazılan metin de aynı griye düşüyordu. Artık metin
+   `var(--text-default)` lacivert, yer tutucu ayrı gri (`rgb(107,112,128)`).
+   Dört alan tipi (input/select/konu/textarea) tek kural bloğunda birleştirildi —
+   eskiden textarea'nın rengi bile farklıydı (`rgb(173,173,173)`). Odak halkası
+   eklendi. Mobilde 16px (iOS 16px altında odakta sayfayı yakınlaştırıyor).
+2. **Gönder butonu inaktif görünüyordu ama tıklanabiliyordu.** Varsayılan hâli
+   griydi; `.contact-submit.active` diye lacivert bir kural vardı ama o sınıfı
+   **hiçbir JS eklemiyordu**, yani ölü kuraldı. Artık varsayılan lacivert,
+   gri YALNIZCA `:disabled` (gönderim sürerken). Hover ve `:focus-visible` eklendi.
+3. **Başarı mesajı okunmuyordu** (turuncu zeminde yeşil yazı). Artık sayfanın
+   üstünde geçici bildirim: `src/toast.ts`, tek bildirim, 5 sn sonra kendiliğinden
+   kapanır, kapat düğmesi var, `role="status"` + `aria-live="polite"`,
+   `prefers-reduced-motion` destekli. Metin `textContent` ile basılır (HTML yorumlanmaz).
+
+Hata mesajları bilerek **bildirime taşınmadı** — hata girdinin yanında kalmalı.
+Onun yerine satır içi `style.color` yerine `.form-status--hata` sınıfı geldi:
+turuncu zeminde beyaz hap içinde koyu kırmızı, okunur.
+
+Testler: `src/toast.test.ts` (10) + forms testlerine 4 yeni = **62 yeşil**.
+
+**Görsel doğrulama YAPILMADI** — o oturumda tarayıcı otomasyon aracı yoktu.
+Sahibi gözle teyit etti/edecek.
+
+## Önceki tur (2026-08-04, ikinci iş) — TURNSTILE + HIZ SINIRI
 
 Form çalışıyordu ama korumasızdı: herkes `/api/contact`'a sınırsız POST atıp
 Resend kotasını ve gelen kutusunu doldurabiliyordu. İki katman eklendi.

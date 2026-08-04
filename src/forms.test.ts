@@ -31,8 +31,12 @@ function formuGonder(): void {
   form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
 }
 
+function durumKutusu(): HTMLElement {
+  return document.querySelector<HTMLElement>('.form-status')!;
+}
+
 function durumMetni(): string {
-  return document.querySelector<HTMLElement>('.form-status')!.textContent ?? '';
+  return durumKutusu().textContent ?? '';
 }
 
 let fetchSahte: ReturnType<typeof vi.fn>;
@@ -112,6 +116,60 @@ describe('initContactForm — gönderim kapısı', () => {
     const gonderilen = JSON.parse(secenekler.body as string);
     expect(gonderilen['cf-turnstile-response']).toBe('jeton-42');
     expect(gonderilen.ad).toBe('Berke');
+  });
+});
+
+describe('initContactForm — geri bildirim', () => {
+  it('başarılı gönderim sayfa üstünde bildirim gösterir, form altında metin bırakmaz', async () => {
+    (window as unknown as Record<string, unknown>).turnstile = sahteTurnstile();
+
+    initContactForm();
+    formuGonder();
+    await vi.waitFor(() => expect(document.querySelector('.toast')).not.toBeNull());
+
+    const toast = document.querySelector<HTMLElement>('.toast')!;
+    expect(toast.classList.contains('toast--basari')).toBe(true);
+    expect(toast.textContent).toContain('Mesajınız alındı');
+    expect(durumMetni()).toBe('');
+  });
+
+  it('sunucu hatası bildirim değil, formun yanında metin gösterir', async () => {
+    fetchSahte.mockResolvedValueOnce(
+      new Response('{"error":"Çok fazla istek gönderdiniz."}', { status: 429 }),
+    );
+    (window as unknown as Record<string, unknown>).turnstile = sahteTurnstile();
+
+    initContactForm();
+    formuGonder();
+    await vi.waitFor(() => expect(durumMetni()).toContain('Çok fazla istek'));
+
+    expect(document.querySelector('.toast')).toBeNull();
+  });
+
+  it('hata metni okunur hata biçimiyle işaretlenir', async () => {
+    fetchSahte.mockResolvedValueOnce(new Response('{"error":"Bir hata"}', { status: 500 }));
+    (window as unknown as Record<string, unknown>).turnstile = sahteTurnstile();
+
+    initContactForm();
+    formuGonder();
+    await vi.waitFor(() => expect(durumMetni()).toContain('Bir hata'));
+
+    expect(durumKutusu().classList.contains('form-status--hata')).toBe(true);
+  });
+
+  it('başarıdan sonra hata biçimi kalıcı olmaz', async () => {
+    fetchSahte
+      .mockResolvedValueOnce(new Response('{"error":"Bir hata"}', { status: 500 }))
+      .mockResolvedValueOnce(new Response('{"success":true}', { status: 200 }));
+    (window as unknown as Record<string, unknown>).turnstile = sahteTurnstile();
+
+    initContactForm();
+    formuGonder();
+    await vi.waitFor(() => expect(durumKutusu().classList.contains('form-status--hata')).toBe(true));
+    formuGonder();
+    await vi.waitFor(() => expect(durumMetni()).toBe(''));
+
+    expect(durumKutusu().classList.contains('form-status--hata')).toBe(false);
   });
 });
 
